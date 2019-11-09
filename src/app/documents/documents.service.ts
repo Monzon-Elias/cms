@@ -41,17 +41,17 @@ export class DocumentsService {
       }
     }
     return maxId;
-}
-
-addDocument(newDocument: Document) {
-  if(newDocument === undefined || newDocument === null) {
-    return;
   }
-  this.maxDocumentId++;
-  newDocument.id = stringify(this.maxDocumentId);
-  this.documents.push(newDocument);
-  let documentsListClone = this.documents.slice();
-  this.documentListChangedEvent.next(documentsListClone);
+
+  addDocument(newDocument: Document) {
+    if(newDocument === undefined || newDocument === null) {
+    return;
+    }
+    this.maxDocumentId++;
+    newDocument.id = stringify(this.maxDocumentId);
+    this.documents.push(newDocument);
+    let documentsListClone = this.documents.slice();
+    this.documentListChangedEvent.next(documentsListClone);
   }
 
   updateDocument(originalDocument: Document, newDocument: Document) {
