@@ -11,8 +11,8 @@ export class DocumentsService {
 
   documents: Document[];
   documentSelectedEvent = new EventEmitter<Document>();
-  documentChangedEvent = new EventEmitter<Document[]>();
-  documentListChangedEvent = new Subject<Document[]>();
+  documentChanged = new Subject<Document[]>();
+  documentListChanged = new Subject<Document[]>();
   maxDocumentId: number;
 
   constructor() { 
@@ -51,21 +51,21 @@ export class DocumentsService {
     newDocument.id = stringify(this.maxDocumentId);
     this.documents.push(newDocument);
     let documentsListClone = this.documents.slice();
-    this.documentListChangedEvent.next(documentsListClone);
+    this.documentListChanged.next(documentsListClone);
   }
 
   updateDocument(originalDocument: Document, newDocument: Document) {
     if(originalDocument === undefined || newDocument === undefined || originalDocument === null || newDocument === null) {
-      return
+      return;
     }
     let pos = this.documents.indexOf(originalDocument)
     if(pos < 0) {
-      return
+      return;
     }
     newDocument.id = originalDocument.id;
     this.documents[pos] = newDocument;
     let documentsListClone = this.documents.slice();
-    this.documentListChangedEvent.next(documentsListClone);
+    this.documentListChanged.next(documentsListClone);
   }
 
   deleteDocument(document: Document) {
@@ -78,7 +78,7 @@ export class DocumentsService {
     }
     this.documents.splice(pos, 1);
     let documentsListClone = this.documents.slice();
-    this.documentChangedEvent.next(documentsListClone);
+    this.documentChanged.next(documentsListClone);
   }
 
 
