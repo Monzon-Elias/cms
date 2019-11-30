@@ -28,7 +28,9 @@ export class ContactDetailComponent implements OnInit {
     }
 
     onDelete() {
+      if (confirm(`Are you sure you want to delete ${this.contact.name} from your contacts?`)) {
       this.contactService.deleteContact(this.contact)
       this.router.navigateByUrl('/contacts', {relativeTo: this.route})
     }
+  }
 }

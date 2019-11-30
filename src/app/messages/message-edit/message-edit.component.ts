@@ -11,8 +11,8 @@ import { MessageService } from '../message.service';
 export class MessageEditComponent implements OnInit {
   currentSender = '1';
   
-  @ViewChild('subject', {static: false}) subject: ElementRef;
-  @ViewChild('message' , {static: false}) msgText: ElementRef;
+  @ViewChild('subject', {static: true}) subject: ElementRef;
+  @ViewChild('msgText' , {static: true}) msgText: ElementRef;
   @Output() addMessageEvent = new EventEmitter<Message>();
 
   constructor(private messageService: MessageService) { }

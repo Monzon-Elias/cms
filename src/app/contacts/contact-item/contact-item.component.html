@@ -1,5 +1,6 @@
 <a 
     class="list-group-item clearfix" 
+    style="cursor: pointer;"
     [routerLink]="contact.id"
     routerLinkActive="active">
     
@@ -9,8 +10,9 @@
     
     <span class="pull-right">
         <img 
+            *ngIf="contact.imageUrl && contact.imageUrl != ''"
             [src]="contact?.imageUrl"
-            alt="{{ contact?.name }}" 
+            alt="Pircute of {{ contact?.name }}" 
             class="img-responsive" 
             style="max-height: 50px;">
     </span>

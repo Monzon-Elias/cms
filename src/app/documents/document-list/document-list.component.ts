@@ -8,6 +8,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './document-list.component.html',
   styleUrls: ['./document-list.component.css']
 })
+
 export class DocumentListComponent implements OnInit, OnDestroy {
   
   subscription: Subscription;
@@ -16,12 +17,12 @@ export class DocumentListComponent implements OnInit, OnDestroy {
   constructor(private documentService: DocumentsService) { }
 
   ngOnInit() {
-    this.subscription = this.documentService.documentChanged.subscribe(
+    this.subscription = this.documentService.documentListChanged.subscribe(
       (documents: Document[]) => {
         this.documents = documents;
       }
     );
-    this.documents = this.documentService.getDocuments();
+    this.documentService.getDocuments();
   }
 
   ngOnDestroy() {

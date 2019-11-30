@@ -7,8 +7,11 @@ import { ContactService } from './contact.service';
   templateUrl: './contacts.component.html',
   styleUrls: ['./contacts.component.css']
 })
+
 export class ContactsComponent implements OnInit {
+
   selectedContact: Contact;
+  
   constructor(private contactService: ContactService) { }
 
   ngOnInit() {
