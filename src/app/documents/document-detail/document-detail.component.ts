@@ -3,6 +3,7 @@ import { Document } from '../document.model';
 import { DocumentsService } from '../documents.service';
 import { ActivatedRoute, Router, Params } from '@angular/router';
 import { WindRefService } from 'src/app/wind-ref.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'cms-document-detail',
@@ -14,6 +15,7 @@ export class DocumentDetailComponent implements OnInit {
   document: Document;
   nativeWindow: any;
   id: string;
+  subscription: Subscription;
 
   constructor(
     private documentsService: DocumentsService,
@@ -24,7 +26,7 @@ export class DocumentDetailComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.route.params
+    this.subscription = this.route.params
       .subscribe(
         (params: Params) => {
           this.id = params['id'];
@@ -32,9 +34,9 @@ export class DocumentDetailComponent implements OnInit {
         });
   }
 
-  onEditDocument() {
-    this.router.navigate(['edit'], {relativeTo: this.route});
-  }
+  // onEditDocument() {
+  //   this.router.navigate(['edit'], {relativeTo: this.route});
+  // }
 
   onView() {
     if(this.document.url) {this.nativeWindow.open(this.document.url)}
@@ -43,5 +45,9 @@ export class DocumentDetailComponent implements OnInit {
   onDelete() {
     this.documentsService.deleteDocument(this.document)
     this.router.navigateByUrl('/documents', {relativeTo: this.route})
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 }

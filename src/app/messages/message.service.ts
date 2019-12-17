@@ -1,8 +1,7 @@
-import { Injectable, EventEmitter } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Message } from './message.model';
-//import { MOCKMESSAGES } from './MOCKMESSAGES';
 import { Subject } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http'
 
 @Injectable({
   providedIn: 'root'
@@ -10,43 +9,27 @@ import { HttpClient } from '@angular/common/http';
 
 export class MessageService {
 
-  messages: Message[]=[];
-  messagesChangeEvent = new Subject<Message[]>();
-  maxMessageId: number;
+  private messages: Message[]=[];
+  messageListChanged = new Subject<Message[]>();
 
-  constructor(private http: HttpClient) {//this.messages = MOCKMESSAGES; 
-  this.initMessages();
+  constructor(private http: HttpClient) {}
+
+  //este bicho sustituye código que está alfinal de varios métodos
+  sortAndSend() {
+    this.messages.sort((a, b) => (a.sender > b.sender) ? 1 : ((b.sender > a.sender) ? -1 : 0));
+    this.messageListChanged.next(this.messages.slice());
 }
 
-  initMessages(): any {
+  getMessages(): any {
     this.http
-    .get<Message[]>('https://cms-elias.firebaseio.com/messages.json')
+    .get<{ message: string, messages: Message[] }>('http://localhost:3000/messages/')
     .subscribe(
-      (messages: Message[]) => {
-      this.messages = messages;
-      this.maxMessageId = this.getMaxId();
-      this.messages = this.messages.sort((a, b) => {
-        if(a < b) return -1; else if(a > b) return 1; else return 0;
-      });
-      this.messagesChangeEvent.next(this.messages.slice());
-    }, err => {console.log(`An error occurred ${err}`)}
-    );
-  }
-
-  storeMessages() {
-    const messages = this.messages;
-
-    return this.http
-    .put('https://cms-elias.firebaseio.com/messages.json', messages)
-    .subscribe(
-      response => {
-        console.log(response);
-        this.messagesChangeEvent.next(this.messages.slice());
-      },
-      err => {
-        console.log(`An error occurred: ${err}`);
-      }
-    );
+       (messageData) => {
+          this.messages = messageData.messages;
+          this.sortAndSend();
+       }, 
+       (err: any) => {console.log(err);
+       });
   }
 
   getMessage(id: string): Message {
@@ -58,54 +41,29 @@ export class MessageService {
     return null;
   }
 
-  getMaxId(): number {
-    let maxId = 0;
-    let currentId = 0;
+  addMessage(message: Message) {
+    if(!message) {
+    return;
+    }
 
-    this.messages.forEach(message => {
-      currentId = +message.id;
+    //make sure id of the new document is empty
+    message.id = '';
 
-      if (currentId > maxId) {
-        maxId = currentId;
-      }
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
     });
-
-    return maxId;
-  }
-
-  addMessage(newMessage: Message) {
-    if(newMessage === undefined || newMessage === null) {
-      return;
-    }
-    this.maxMessageId++;
-    newMessage.id = this.maxMessageId.toString();
-    this.messages.push(newMessage);
-    this.storeMessages();
-  }
-
-  updateMessage(originalMessage: Message, newMessage: Message) {
-    if(originalMessage === undefined || newMessage === undefined || originalMessage === null || newMessage === null) {
-      return;
-    }
-    let pos = this.messages.indexOf(originalMessage);
     
-    if(pos < 0) return;
-
-    newMessage.id = originalMessage.id;
-    this.messages[pos] = newMessage;
-    this.storeMessages();
+    //add to database, messageM due to duplication in the same line
+    this.http.post<{ messageM: string, message: Message}>('http://localhost:3000/messages/'
+    ,message
+    ,{headers: headers})
+      .subscribe(
+        (responseData) => {
+          //add new document to documents
+          this.messages.push(responseData.message);
+          this.sortAndSend();
+        });
   }
 
-  deleteMessage(message: Message) {
-    if(message === null || message === undefined) {
-      return;
-    }
-    const pos = this.messages.indexOf(message);
-
-    if(pos < 0) return;
-    
-    this.messages.splice(pos, 1);
-    this.storeMessages();
-  }
 
 }

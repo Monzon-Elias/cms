@@ -1,4 +1,4 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform, TemplateRef } from '@angular/core';
 import { Contact } from './contact.model';
 
 @Pipe({
@@ -6,15 +6,15 @@ import { Contact } from './contact.model';
 })
 export class ContactsFilterPipe implements PipeTransform {
   
-  transform(contacts: Contact[], [term]) {
+  transform(contacts: Contact[], term: string): any {
     let filteredArray: Contact[] = [];
+  
+    if(term && term.length > 0) { 
 
-    filteredArray = contacts.filter((contact: any) => contact.name.toLowerCase().includes(term.toLowerCase())
+    filteredArray = contacts.filter((contact: Contact) => contact.name.toLowerCase().includes(term.toLowerCase())
     );
-
-    if(filteredArray.length < 1) return contacts;
-    
-    return filteredArray;
+    }
+    return filteredArray.length > 0 ? filteredArray : contacts;
     }
 
   }

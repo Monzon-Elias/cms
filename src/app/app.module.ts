@@ -22,7 +22,6 @@ import { DropdownDirective } from './dropdown.directive';
 import { AppRoutingModule } from './app-routing';
 import { DocumentViewComponent } from './documents/document-view/document-view.component';
 import { DocumentEditComponent } from './documents/document-edit/document-edit.component';
-import { WindRefService } from './wind-ref.service';
 import { ContactEditComponent } from './contacts/contact-edit/contact-edit.component';
 import { ContactsFilterPipe } from './contacts/contacts-filter.pipe';
 import { HttpClientModule } from '@angular/common/http';
@@ -47,7 +46,7 @@ import { HttpClientModule } from '@angular/common/http';
     DocumentViewComponent,
     DocumentEditComponent,
     ContactEditComponent,
-    ContactsFilterPipe
+    ContactsFilterPipe,
   ],
   imports: [
     BrowserModule,
@@ -56,7 +55,7 @@ import { HttpClientModule } from '@angular/common/http';
     AppRoutingModule,
     DndModule.forRoot()
   ],
-  providers: [WindRefService],
+  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -15,7 +15,7 @@
               size="120"
               max="120"
               name="name"
-              ngModel
+              [ngModel]="document?.name"
               required
               #name="ngModel">
           </div>
@@ -29,27 +29,28 @@
               size="120"
               max="255"
               name="description"
-              ngModel>
+              [ngModel]="document?.description"
+              #description="ngModel">
           </div>
   
           <div class="col-sm-12 form-group">
-            <label for="documentUrl">Document URL</label>
+            <label for="url">Document URL</label>
             <input
               type="text"
-              id="documentUrl"
+              id="url"
               class="form-control"
               size="150"
               max="255"
-              name="documentUrl"
-              ngModel
+              name="url"
+              [ngModel]="document?.url"
               required
-              #documentUrl="ngModel">
+              #url="ngModel">
           </div>
         </div>
         
         <div 
-            *ngIf="!name.valid + !documentUrl.valid"
-            class="row alert alert-danger">
+            class="alert alert-danger"
+            *ngIf="(url.invalid && url.touched) || (name.invalid && name.touched)">
             <span>The Document title and URL are required fields</span>
         </div>
   
